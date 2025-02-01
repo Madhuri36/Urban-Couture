@@ -3,7 +3,6 @@
 
 Urban Couture is a comprehensive full-stack fashion e-commerce platform designed to provide users with a seamless shopping experience. This platform enables users to browse, purchase, and track fashion products effortlessly. Additionally, an intuitive admin panel allows efficient management of products, orders, and users. The platform supports multiple payment options, including Cash on Delivery (COD) and Stripe.
 
-<br>
 
 ## **Key Features**
 
@@ -18,7 +17,6 @@ Urban Couture is a comprehensive full-stack fashion e-commerce platform designed
 ### **Admin Features**
 - Interactive dashboard for adding/deleting products, orders, and listing all orders
 - Process orders and manage shipping
-<br>
 
 ## **Technology Stack**
 
