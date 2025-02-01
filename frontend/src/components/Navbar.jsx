@@ -45,6 +45,9 @@ const Navbar = () => {
           <p>CONTACT</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
         </NavLink>
+        <a href="https://urban-couture-admin.vercel.app/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 text-gray-700 border px-1">
+          <p>ADMIN PANEL</p>
+        </a>
       </ul>
 
       <div className="flex items-center gap-6">
