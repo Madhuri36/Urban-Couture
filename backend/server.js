@@ -11,24 +11,15 @@ import productRouter from './routes/productRoute.js'
 import cartRouter from './routes/cartRoute.js'
 import orderRouter from './routes/orderRoute.js'
 
-// App Config
 const app = express()
 const port = process.env.PORT || 4000
 
 // CORS Configuration
-const allowedOrigins = [
-    'https://urban-couture.vercel.app',
-    'http://localhost:5173'
-]
-
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    },
+    origin: [
+        'https://urban-couture.vercel.app',
+        'http://localhost:5173'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -37,30 +28,51 @@ app.use(cors({
 // Middlewares
 app.use(express.json())
 
+// Root Route (does not require database)
+app.get('/', (req, res) => {
+    res.status(200).send('API working')
+})
+
+// Configure Cloudinary
+connectCloudinary().catch(err => {
+    console.error('Cloudinary configuration error:', err)
+})
+
+// Ensure MongoDB is connected before API requests
+app.use('/api', async (req, res, next) => {
+    try {
+        await connectDB()
+        next()
+    } catch (error) {
+        console.error('Database connection error:', error.message)
+        res.status(503).json({
+            success: false,
+            message: 'Database connection failed'
+        })
+    }
+})
+
 // API Endpoints
 app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
 
-// Root Route
-app.get('/', (req, res) => {
-    res.send('API working')
+// Error Handling
+app.use((err, req, res, next) => {
+    console.error('Server error:', err)
+    res.status(500).json({
+        success: false,
+        message: 'Internal server error'
+    })
 })
 
-// Start Server
-const startServer = async () => {
-    try {
-        await connectDB()
-        await connectCloudinary()
+// Export Express app for Vercel
+export default app
 
-        app.listen(port, () => {
-            console.log('Server is listening to PORT: ' + port)
-        })
-    } catch (error) {
-        console.error('Server startup failed:', error)
-        process.exit(1)
-    }
+// Local development only
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server listening on port ${port}`)
+    })
 }
-
-startServer()
